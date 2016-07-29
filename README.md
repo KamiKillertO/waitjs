@@ -1,2 +1,2 @@
-# waitjs
-The coolest way of waiting
+# ![waitjs](waitjs.png)
+The coolest way to wait
