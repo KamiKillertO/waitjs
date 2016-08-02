@@ -1,28 +1,28 @@
 {
-  "name": "waitjs",
-  "version": "0.0.0",
-  "description": "The coolest way to wait",
-  "main": "src/index.js",
-  "scripts": {
-    "postinstall": "bower install",
-    "test": "node_modules/.bin/_mocha test/spec"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/KamiKillertO/waitjs.git"
-  },
-  "keywords": [
-    "wait",
-    "setTimeout",
-    "setInterval"
-  ],
-  "author": "JEGARD Benjamin <kamikillerto@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/KamiKillertO/waitjs/issues"
-  },
-  "homepage": "https://github.com/KamiKillertO/waitjs#readme",
-  "devDependencies": {
-    "mocha": "^2.5.3",
-    "should": "^10.0.0",
+    "name": "waitjs",
+    "version": "0.0.0",
+    "description": "The coolest way to wait",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "node_modules/.bin/_mocha test/spec"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KamiKillertO/waitjs.git"
+    },
+    "keywords": [
+        "wait",
+        "setTimeout",
+        "setInterval"
+    ],
+    "author": "JEGARD Benjamin <kamikillerto@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/KamiKillertO/waitjs/issues"
+    },
+    "homepage": "https://github.com/KamiKillertO/waitjs#readme",
+    "devDependencies": {
+        "mocha": "^2.5.3",
+        "should": "^10.0.0"
+    }
 }
