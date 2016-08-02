@@ -1,8 +1,8 @@
-'use strict';
 
-let self = this.self || this.window || {};
+var self = this.self || this.window || {};
 
 (function(local) {
+    'use strict';
     function noop() {}
 
     // States:
