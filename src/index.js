@@ -78,6 +78,10 @@ var self = this.self || this.window || {};
         return res;
     };
 
+    Wait.prototype.catch = function(onRejected) {
+        return this.then(null, onRejected);
+    };
+
     function safeThen(self, onFulfilled, onRejected) {
         return new self.constructor(function(resolve, reject) {
             var res = new Wait(noop);
