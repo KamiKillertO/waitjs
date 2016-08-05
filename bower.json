@@ -1,0 +1,28 @@
+{
+    "name": "wait-js",
+    "description": "The coolest way to wait",
+    "main": "src/index.js",
+    "authors": [{
+        "name": "JEGARD Benjamin",
+        "email": "<kamikillerto@gmail.com>"
+    }],
+    "moduleType": [
+        "globals",
+        "amd",
+        "node"
+    ],
+    "license": "MIT",
+    "keywords": [
+        "wait",
+        "setTimeout",
+        "setInterval"
+    ],
+    "homepage": "https://github.com/KamiKillertO/waitjs",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ]
+}
