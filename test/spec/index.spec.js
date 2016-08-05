@@ -29,7 +29,7 @@ describe('waitjs', function () {
     });
     it('should catch the error', function(done) {
         function callback(error) {
-            (error).should.be.a.Error;
+            should.equal(Object.prototype.toString.call(error), '[object Error]');
             done();
         }
         wait(1000).then(function() {
