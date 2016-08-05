@@ -27,4 +27,14 @@ describe('waitjs', function () {
         }
         wait(1000).then(_incrementCount).then(callback);
     });
+    it('should catch the error', function(done) {
+        function callback(error) {
+            (error).should.be.a.Error;
+            done();
+        }
+        wait(1000).then(function() {
+            throw new Error('Error inside then');
+        }).catch(callback);
+
+    });
 });
