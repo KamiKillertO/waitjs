@@ -1,10 +1,9 @@
-
 # <div align="center"><img width="200px" src="waitjs.png"></div>
 
 The coolest way to wait
 [![BuildStatus](https://travis-ci.org/KamiKillertO/waitjs.svg?branch=develop)](https://travis-ci.org/KamiKillertO/waitjs)
 [![](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![](https://img.shields.io/badge/release-v0.1.0-blue.svg)](https://github.com/KamiKillertO/waitjs/releases/tag/v0.1.0)
+[![](https://img.shields.io/badge/release-v0.1.1-blue.svg)](https://github.com/KamiKillertO/waitjs/releases/tag/v0.1.1)
 
 waitjs provides you a promise-like interface to manage postponed executions.
 
@@ -25,6 +24,25 @@ setTimeout(delayedFn, 500);
  };
  wait(500).then(delayedFn);
  ```
+
+## Installation
+
+waitjs is available on npm.
+
+```bash
+npm install --save @kamikillerto/wait-js
+```
+
+This will install the PeasyDB library files in your project's bower_components folder.  
+
+waitjs is available on bower;
+
+```bash
+bower install wait-js --save
+```
+
+This will install the waitjs library files in your project's bower_components folder.  
+After you just have to add `<script>` or use `require` with you favorite AMD module loader
 
 ## API
 
