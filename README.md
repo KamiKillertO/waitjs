@@ -1,6 +1,5 @@
-# <div align="center"><img width="200px" src="waitjs.png"></div>
+# <div><img width="200px" src="waitjs.png">The coolest way to wait</div>
 
-The coolest way to wait
 [![BuildStatus](https://travis-ci.org/KamiKillertO/waitjs.svg?branch=develop)](https://travis-ci.org/KamiKillertO/waitjs)
 [![](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![](https://img.shields.io/badge/release-v0.1.1-blue.svg)](https://github.com/KamiKillertO/waitjs/releases/tag/v0.1.1)
