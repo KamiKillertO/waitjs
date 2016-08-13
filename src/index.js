@@ -124,7 +124,7 @@ var self = this.self || this.window || {};
         self._state = deferred.wait._state;
         return;
     }
-    function handleWithCb(self, deferred) {
+    function handleWithCb(self, deferred, cb) {
         var ret = tryCallOne(cb, self._value);
         if (ret === IS_ERROR) {
             reject(deferred.wait, LAST_ERROR);
