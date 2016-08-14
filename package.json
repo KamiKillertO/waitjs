@@ -1,6 +1,6 @@
 {
     "name": "@kamikillerto/wait-js",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "The coolest way to wait",
     "main": "src/wait.js",
     "scripts": {
