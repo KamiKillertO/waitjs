@@ -208,11 +208,8 @@ var self = this.self || this.window || {};
 
     function loop(fn, wait) {
         if (wait._occurence) {
-            if (wait._occurence === 0) {
+            if (wait._occurence !== Infinity && --wait._occurence === 0) {
                 return clearInterval(wait._id);
-            }
-            if (wait._occurence !== Infinity) {
-                wait._occurence--;
             }
         }
         return;
