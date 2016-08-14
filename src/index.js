@@ -1,8 +1,8 @@
-
 var self = this.self || this.window || {};
 
 (function(local) {
     'use strict';
+
     function noop() {}
 
     // States:
@@ -10,12 +10,12 @@ var self = this.self || this.window || {};
     // 0 - pending
     // 1 - fulfilled with _value
     // 2 - rejected with _value
-    // 3 - adopted the state of another promise, _value
+    // 3 - repeat
     var State = {
         PENDING: 0,
         FULFILLED: 1,
         REJECTED: 2,
-        ADOPTED: 3
+        REPEAT: 3
     };
 
     //  extract try/catch here to avoid using them inside critical functions
@@ -50,7 +50,7 @@ var self = this.self || this.window || {};
         }
     }
 
-    function Wait(fn) {
+    function Wait(fn, occurence) {
         if (typeof this !== 'object') {
             throw new TypeError('Waits must be constructed via new');
         }
@@ -61,6 +61,9 @@ var self = this.self || this.window || {};
         this._state = 0;
         this._value = null;
         this._deferreds = [];
+
+        this._occurence = occurence || undefined;
+
         if (fn === noop) return;
         doResolve(fn, this);
     }
@@ -73,7 +76,7 @@ var self = this.self || this.window || {};
             safeThen(this, onFulfilled, onRejected);
         }
         var res = new Wait(noop);
-        res._id = this._id;
+        // res._id = this._id;
         handle(this, new Handler(onFulfilled, onRejected, res));
         return res;
     };
@@ -85,89 +88,91 @@ var self = this.self || this.window || {};
     function safeThen(self, onFulfilled, onRejected) {
         return new self.constructor(function(resolve, reject) {
             var res = new Wait(noop);
-            res._id = self._id;
+            // res._id = self._id;
             res.then(resolve, reject);
             handle(self, new Handler(onFulfilled, onRejected, res));
         });
     }
+
     function handle(self, deferred) {
-        while (self._state === State.ADOPTED) {
-            self = self._value;
-        }
         if (Wait._onHandle) {
             Wait._onHandle(self);
         }
         if (self._state === State.PENDING) {
-            if (self._deferredState === State.PENDING) {
-                self._deferredState = State.FULFILLED;
-                self._deferreds.push(deferred);
+            if (self._deferredState === State.FULFILLED) {
+                self._deferredState = State.REJECTED;
+                self._deferreds = [self._deferreds, deferred];
                 return;
             }
-            if (self._deferredState === State.FULFILLED) {
-                // self._deferredState = State.REJECTED;
-                // self._deferreds = [self._deferreds, deferred];
-                self._deferreds.push(deferred);
+            if (self._deferredState === State.PENDING) {
+                self._deferredState = State.FULFILLED;
+                self._deferreds = deferred;
                 return;
             }
             self._deferreds.push(deferred);
             return;
         }
-        if (Array.isArray(deferred)) {
-            for (var i = 0; i < deferred.length; i++) {
-                handle(self, deferred[i]);
-            }
-        } else {
-            handleResolved(self, deferred);
-        }
+        return handleResolved(self, deferred);
     }
 
-    function handleResolved(self, deferred) {
-        var cb = self._state === State.FULFILLED ? deferred.onFulfilled : deferred.onRejected;
-        if (cb === null) {
-            if (self._state === State.FULFILLED) {
-                resolve(deferred.wait, self._value);
-            } else {
-                reject(deferred.wait, self._value);
-            }
-            return;
+    function handleWithoutCb(self, deferred) {
+        if (self._state === State.FULFILLED || self._state === State.REPEAT) {
+            resolve(deferred.wait, self._value);
+        } else {
+            reject(deferred.wait, self._value);
         }
+        self._state = deferred.wait._state;
+        return;
+    }
+    function handleWithCb(self, deferred, cb) {
         var ret = tryCallOne(cb, self._value);
         if (ret === IS_ERROR) {
             reject(deferred.wait, LAST_ERROR);
         } else {
             resolve(deferred.wait, ret);
         }
+        return;
+    }
+    function handleResolved(self, deferred) {
+        var cb = (self._state === State.FULFILLED || self._state === State.REPEAT) ? deferred.onFulfilled : deferred.onRejected;
+        if (cb === null) {
+            return handleWithoutCb(self, deferred);
+        }
+        return handleWithCb(self, deferred, cb);
+    }
+
+    function resolveWithValue(self, newValue)  {
+        var then = getThen(newValue);
+        if (then === IS_ERROR) {
+            return reject(self, LAST_ERROR);
+        }
+        if (typeof then === 'function') {
+            doResolve(then.bind(newValue), self);
+            return;
+        }
     }
 
     function resolve(self, newValue) {
-        // Wait Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-        if (newValue === self) {
+        // promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+        if (newValue === self || newValue instanceof Wait) {
+            LAST_ERROR = new TypeError('A wait cannot be resolved with an object Wait.');
             return reject(
                 self,
-                new TypeError('A wait cannot be resolved with itself.')
+                LAST_ERROR
             );
         }
         if (
             newValue &&
             (typeof newValue === 'object' || typeof newValue === 'function')
         ) {
-            var then = getThen(newValue);
-            if (then === IS_ERROR) {
-                return reject(self, LAST_ERROR);
-            }
-            if ( then === self.then && newValue instanceof Wait ) {
-                self._state = State.ADOPTED;
-                self._value = newValue;
-                finale(self);
-                return;
-            } else if (typeof then === 'function') {
-                doResolve(then.bind(newValue), self);
-                return;
-            }
+            return resolveWithValue(self, newValue);
         }
         self._state = State.FULFILLED;
+        if (self._occurence !== 0) {
+            self._state = State.REPEAT;
+        }
         self._value = newValue;
-        finale(self);
+        finalize(self);
     }
 
     function reject(self, newValue) {
@@ -176,21 +181,20 @@ var self = this.self || this.window || {};
         if (Wait._onReject) {
             Wait._onReject(self, newValue);
         }
-        finale(self);
+        finalize(self);
     }
 
-    function finale(self) {
+    function finalize(self) {
         if (self._deferredState === State.FULFILLED) {
             handle(self, self._deferreds);
-            self._deferreds = null;
+            wait._state = State.REPEAT;
+            if (wait._occurence === 0) {
+                self._deferreds = null;
+            }
         }
         if (self._deferredState === State.REJECTED) {
-            if (Array.isArray(self.deferreds)) {
-                for (var i = 0; i < self._deferreds.length; i++) {
-                    handle(self, self._deferreds[i]);
-                }
-            } else {
-                handle(self, self._deferreds);
+            for (var index = 0; index < self._deferreds.length; index++) {
+                handle(self, self._deferreds[index]);
             }
             self._deferreds = null;
         }
@@ -200,6 +204,18 @@ var self = this.self || this.window || {};
         this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
         this.onRejected = typeof onRejected === 'function' ? onRejected : null;
         this.wait = wait;
+    }
+
+    function loop(fn, wait) {
+        if (wait._occurence) {
+            if (wait._occurence === 0) {
+                return clearInterval(wait._id);
+            }
+            if (wait._occurence !== Infinity) {
+                wait._occurence--;
+            }
+        }
+        return;
     }
     /**
      * Take a potentially misbehaving resolver function and make sure
@@ -211,20 +227,27 @@ var self = this.self || this.window || {};
         var done = false;
         var res = tryCallTwo(fn, function(value) {
             if (done) return;
-            done = true;
-            resolve(wait, value);
+            loop(fn, wait);
+            resolve(wait);
         }, function(reason) {
             if (done) return;
             done = true;
             reject(wait, reason);
         });
+        wait._id = res;
+
         if (!done && res === IS_ERROR) {
             done = true;
             return reject(wait, LAST_ERROR);
         }
     }
 
-    function wait(time) {
+    function wait(time, occurence) {
+        if (occurence) {
+            return new Wait(function(resolve, reject) {
+                return setInterval(resolve, time);
+            }, occurence);
+        }
         return new Wait(function(resolve, reject) {
             return setTimeout(resolve, time);
         });
