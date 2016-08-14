@@ -138,7 +138,7 @@ var self = this.self || this.window || {};
         if (cb === null) {
             return handleWithoutCb(self, deferred);
         }
-        return handleWithCb(self, deferred);
+        return handleWithCb(self, deferred, cb);
     }
 
     function resolveWithValue(self, newValue)  {
@@ -207,12 +207,15 @@ var self = this.self || this.window || {};
     }
 
     function loop(fn, wait) {
-        if (wait._occurence !== Infinity) {
-            wait._occurence--;
+        if (wait._occurence) {
+            if (wait._occurence === 0) {
+                return clearInterval(wait._id);
+            }
+            if (wait._occurence !== Infinity) {
+                wait._occurence--;
+            }
         }
-        if (wait._occurence && wait._occurence === 0) {
-            clearInterval(wait._id);
-        }
+        return;
     }
     /**
      * Take a potentially misbehaving resolver function and make sure
