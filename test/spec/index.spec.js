@@ -4,7 +4,7 @@
 "use strict";
 
 var should = require('should');
-var wait = require('../../src/index');
+var wait = require('../../src/wait');
 
 describe('waitjs', function () {
     it('should call callback after 1s', function(done) {
@@ -35,6 +35,29 @@ describe('waitjs', function () {
         wait(1000).then(function() {
             throw new Error('Error inside then');
         }).catch(callback);
-
     });
+    it('should be call multiple times (parameter)', function(done) {
+        var count = 0,
+            occurence = 5;
+        function callback() {
+            count++;
+            if (count === occurence){
+                (true).should.be.ok();
+                done();
+            }
+        }
+        var w = wait(100, occurence).then(callback);
+    });
+    // it('should be call multiple times (repeat)', function(done) {
+    //     var count = 0,
+    //         occurence = 5;
+    //     function callback() {
+    //         count++;
+    //         if (count === occurence){
+    //             (true).should.be.ok();
+    //             done();
+    //         }
+    //     }
+    //     var w = wait(100).repeat(occurence).then(callback);
+    // });
 });
