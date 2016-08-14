@@ -1,7 +1,7 @@
 {
     "name": "wait-js",
     "description": "The coolest way to wait",
-    "main": "src/index.js",
+    "main": "src/wait.js",
     "authors": [{
         "name": "JEGARD Benjamin",
         "email": "<kamikillerto@gmail.com>"
