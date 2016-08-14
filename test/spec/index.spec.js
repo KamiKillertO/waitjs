@@ -4,7 +4,7 @@
 "use strict";
 
 var should = require('should');
-var wait = require('../../src/index');
+var wait = require('../../src/wait');
 
 describe('waitjs', function () {
     it('should call callback after 1s', function(done) {
