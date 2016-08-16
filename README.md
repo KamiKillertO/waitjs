@@ -2,7 +2,8 @@
 
 [![BuildStatus](https://travis-ci.org/KamiKillertO/waitjs.svg?branch=develop)](https://travis-ci.org/KamiKillertO/waitjs)
 [![](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![](https://img.shields.io/badge/release-v0.2.2-blue.svg)](https://github.com/KamiKillertO/waitjs/releases/tag/v0.2.2)
+[![](https://img.shields.io/badge/release-v0.2.3-blue.svg)](https://github.com/KamiKillertO/waitjs/releases/tag/v0.2.3)
+[![npm version](https://badge.fury.io/js/%40kamikillerto%2Fwait-js.svg)](https://badge.fury.io/js/%40kamikillerto%2Fwait-js)
 
 waitjs provides you a promise-like interface to manage postponed executions.
 
