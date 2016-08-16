@@ -240,7 +240,13 @@ var self = this.self || this.window || {};
     }
 
     function wait(time, occurence) {
-        if (occurence) {
+        if(time !== undefined && time !== null && typeof time !== 'number') {
+            throw new TypeError("Failed to execute 'wait' : argument 'time' must be a number.");
+        }
+        if (occurence !== undefined && time !== null ) {
+            if (typeof occurence !== 'number') {
+                throw new TypeError("Failed to execute 'wait' : argument 'occurence' must be a number.");
+            }
             return new Wait(function(resolve, reject) {
                 return setInterval(resolve, time);
             }, occurence);
