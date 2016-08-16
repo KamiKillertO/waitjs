@@ -48,6 +48,18 @@ describe('waitjs', function () {
         }
         var w = wait(100, occurence).then(callback);
     });
+    // it('should throw an error', function() {
+    //     (wait).should.throw(TypeError);
+    // });
+    it('time should should be only a number or null', function() {
+        (()=>wait("")).should.throw(TypeError);
+        (()=>wait()).should.not.throw();
+    });
+    it('occurence should be only a number or null', function() {
+        (()=>wait(null,"")).should.throw(TypeError);
+        (()=>wait(null)).should.not.throw();
+        (()=>wait(null, 5)).should.not.throw();
+    });
     // it('should be call multiple times (repeat)', function(done) {
     //     var count = 0,
     //         occurence = 5;
