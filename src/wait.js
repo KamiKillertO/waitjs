@@ -243,7 +243,7 @@ var self = this.self || this.window || {};
         if(time !== undefined && time !== null && typeof time !== 'number') {
             throw new TypeError("Failed to execute 'wait' : argument 'time' must be a number.");
         }
-        if (occurence !== undefined && time !== null ) {
+        if (occurence !== undefined && occurence !== null ) {
             if (typeof occurence !== 'number') {
                 throw new TypeError("Failed to execute 'wait' : argument 'occurence' must be a number.");
             }
