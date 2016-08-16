@@ -168,7 +168,7 @@ var self = this.self || this.window || {};
             return resolveWithValue(self, newValue);
         }
         self._state = State.FULFILLED;
-        if (self._occurence !== 0) {
+        if (self._occurence && self._occurence !== 0) {
             self._state = State.REPEAT;
         }
         self._value = newValue;
@@ -240,7 +240,13 @@ var self = this.self || this.window || {};
     }
 
     function wait(time, occurence) {
-        if (occurence) {
+        if(time !== undefined && time !== null && typeof time !== 'number') {
+            throw new TypeError("Failed to execute 'wait' : argument 'time' must be a number.");
+        }
+        if (occurence !== undefined && occurence !== null ) {
+            if (typeof occurence !== 'number') {
+                throw new TypeError("Failed to execute 'wait' : argument 'occurence' must be a number.");
+            }
             return new Wait(function(resolve, reject) {
                 return setInterval(resolve, time);
             }, occurence);
