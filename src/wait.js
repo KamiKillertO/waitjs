@@ -168,7 +168,7 @@ var self = this.self || this.window || {};
             return resolveWithValue(self, newValue);
         }
         self._state = State.FULFILLED;
-        if (self._occurence !== 0) {
+        if (self._occurence && self._occurence !== 0) {
             self._state = State.REPEAT;
         }
         self._value = newValue;
