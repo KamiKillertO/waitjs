@@ -10,22 +10,16 @@ waitjs provides you a promise-like interface to manage postponed executions.
 
 ## Installation
 
-waitjs is available on npm.
+waitjs is available on npm and bower.
 
 ```bash
 npm install --save @kamikillerto/wait-js
-```
-
-This will install the PeasyDB library files in your project's bower_components folder.  
-
-waitjs is available on bower;
-
-```bash
+#or
 bower install wait-js --save
 ```
 
-This will install the waitjs library files in your project's bower_components folder.  
-After you just have to add `<script>` or use `require` with you favorite AMD module loader
+This will install the waitjs library files in your project's bower_components or node_modules folder.  
+After you just have to add `<script>` or use `require` with you favorite AMD module loader.
 
 ```javascript
 var wait = require('@kamikillerto/wait-js');
